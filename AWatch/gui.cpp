@@ -21,38 +21,19 @@ Created by Lewis he on October 10, 2019.
 //#include "chaos.h"
 //#include "pxloader.h"
 
-#define RTC_TIME_ZONE   "GMT"
+#define RTC_TIME_ZONE   "GMT-1"
 #define LV_COLOR_WBLUE LV_COLOR_MAKE(0x03, 0x55, 0xAA) //(0x00, 0x50, 0xA0)
 #define LV_COLOR_WBORA LV_COLOR_MAKE(0xF6, 0x92, 0x00)
 
-//LV_FONT_DECLARE(Geometr);
-//LV_FONT_DECLARE(Ubuntu);
 LV_FONT_DECLARE(Topaz_16);
 LV_FONT_DECLARE(digital_font);
-//LV_FONT_DECLARE(liquidCrystal_nor_64);
-//LV_IMG_DECLARE(bg);
-//LV_IMG_DECLARE(bg1);
-//LV_IMG_DECLARE(bg2);
-//LV_IMG_DECLARE(bg3);
-//LV_IMG_DECLARE(WALLPAPER_1_IMG);
-//LV_IMG_DECLARE(WALLPAPER_2_IMG);
-//LV_IMG_DECLARE(WALLPAPER_3_IMG);
 LV_IMG_DECLARE(step);
 LV_IMG_DECLARE(menu);
 
-//LV_IMG_DECLARE(wifi);
-//LV_IMG_DECLARE(light);
 LV_IMG_DECLARE(bluetooth);
-//LV_IMG_DECLARE(sd);
-//LV_IMG_DECLARE(setting);
 LV_IMG_DECLARE(on);
 LV_IMG_DECLARE(off);
-//LV_IMG_DECLARE(level1);
-//LV_IMG_DECLARE(level2);
-//LV_IMG_DECLARE(level3);
 LV_IMG_DECLARE(iexit);
-//LV_IMG_DECLARE(modules);
-//LV_IMG_DECLARE(CAMERA_PNG);
 
 LV_IMG_DECLARE(gui_fwd);
 LV_IMG_DECLARE(gui_bwd);
@@ -63,6 +44,7 @@ LV_IMG_DECLARE(disk);
 LV_IMG_DECLARE(timer_clock);
 LV_IMG_DECLARE(wb_wifi);
 LV_IMG_DECLARE(protracker);
+LV_IMG_DECLARE(speech);
 
 //TTGOClass *ttgo = TTGOClass::getWatch();
 extern EventGroupHandle_t g_event_group;
@@ -108,6 +90,7 @@ static void tracker_tw_event_cb(uint8_t index, bool en);
 static void view_event_handler(lv_obj_t *obj, lv_event_t event);
 
 static void wifi_event_cb();
+static void say_event_cb();
 static void sd_event_cb();
 static void setting_event_cb();
 static void light_event_cb();
@@ -438,6 +421,7 @@ private:
 MenuBar::lv_menu_config_t _cfg[] = {
     {.name = "Timer",  .img = (void *) &timer_clock, .event_cb = timer_event_cb},
     {.name = "Music",  .img = (void *) &protracker, .event_cb = tracker_event_cb},    
+    {.name = "Say",  .img = (void *) &speech, .event_cb = say_event_cb},
     {.name = "WiFi",  .img = (void *) &wb_wifi, .event_cb = wifi_event_cb},
     //{.name = "nCov", .img = (void *) &nCov, .event_cb = nCov_event_cb},
     //{.name = "Thermometer", .img = (void *) &thermometer, .event_cb = thermometer_event_cb},
@@ -637,6 +621,11 @@ static void updateTime()
       lv_label_set_style(alarmLabel, LV_LABEL_STYLE_MAIN, &dateStyle);
       bar.hidden(LV_STATUS_BAR_BELL);
     }
+    if (alarm_active) {
+      sprintf(tbuf,"Outta time!");
+      lv_label_set_style(alarmLabel, LV_LABEL_STYLE_MAIN, &dateStyle);
+      //bar.hidden(LV_STATUS_BAR_BELL);
+    }    
     //Serial.println(tbuf);
     lv_label_set_text(alarmLabel, tbuf);
     lv_obj_align(alarmLabel, dateLabel, LV_ALIGN_OUT_BOTTOM_MID, 0, 8);
@@ -1666,6 +1655,52 @@ void wifi_list_add(const char *ssid)
     list->add(ssid);
 }
 
+void say_kb_event_cb(Keyboard::kb_event_t event)
+{
+    if (event == 0) { // See something, say something
+        kb->hidden();
+        Serial.println(kb->getText());
+        strlcpy(saytext, kb->getText(), sizeof(saytext));
+        speech_active = true;
+    } else if (event == 1) { // User cancelled, lets quit
+        delete kb;
+        delete sw;
+        delete pl;
+        pl = nullptr;
+        kb = nullptr;
+        sw = nullptr;
+        menuBars.hidden(false);
+    }
+}
+
+static lv_obj_t *say_cont = nullptr;
+static void say_tw_event_cb(uint8_t index)
+{
+
+    kb = new Keyboard;
+    kb->create();
+    kb->align(bar.self(), LV_ALIGN_OUT_BOTTOM_MID);
+    kb->setKeyboardEvent(say_kb_event_cb);
+    
+}
+
+static void say_event_cb()
+{
+    
+    const uint8_t cfg_count = 1;
+    TimerWindow::TimerWindow_cfg_t cfg[cfg_count] = {
+        {"Launch Say", say_tw_event_cb},
+    };
+    tw = new TimerWindow;
+    tw->create(cfg, cfg_count, []() {
+        delete tw;
+        tw = nullptr;
+        menuBars.hidden(false);
+    });
+
+    tw->align(bar.self(), LV_ALIGN_OUT_BOTTOM_MID);
+
+}
 
 static void wifi_event_cb()
 {
@@ -1842,13 +1877,23 @@ static void timer_tw_event_cb(uint8_t index)
 
     switch(index){
       case 0:
+        timer_left += 60;
+        timer_active = true;
+        lv_label_set_style(alarmLabel, LV_LABEL_STYLE_MAIN, &inv_dateStyle1);
+        bar.show(LV_STATUS_BAR_BELL);
+        Serial.printf("Added 1m. Time left: %d seconds, %d mins\n", timer_left, timer_left/60);
+        break;      
+      case 1:
         timer_left += 300;
         timer_active = true;
         lv_label_set_style(alarmLabel, LV_LABEL_STYLE_MAIN, &inv_dateStyle1);
         bar.show(LV_STATUS_BAR_BELL);
         Serial.printf("Added 5 mins. Time left: %d seconds, %d mins\n", timer_left, timer_left/60);
         break;
-      case 1:
+      case 2:
+        if (alarm_active && mod_mode == 2){
+          mod_mode = 0;
+        }
         timer_left = 0;
         timer_active = false;
         alarm_active = false;
@@ -1862,8 +1907,9 @@ static void timer_tw_event_cb(uint8_t index)
 
 static void timer_event_cb()
 {
-    const uint8_t cfg_count = 2;
+    const uint8_t cfg_count = 3;
     TimerWindow::TimerWindow_cfg_t cfg[cfg_count] = {
+        {"Add 1 min", timer_tw_event_cb},
         {"Add 5 mins", timer_tw_event_cb},
         {"Cancel", timer_tw_event_cb},
     };

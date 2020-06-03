@@ -1,10 +1,18 @@
 # AWatch
 An ESP32 TTGO T-Watch (2019 edition) Amiga-inspired Countdown Timer Watch
 
+[![Watch the video](https://www.youtube.com/watch?v=5ogbpPmmSac/maxresdefault.jpg)](https://www.youtube.com/watch?v=5ogbpPmmSac)
+
 # Background
 My partner asked if I could build her a timer countdown watch for measuring time outside during COVID lockdown. I had TTGO T-Watches knocking around and decided to give it a go. I'm a big fan of Amiga design patterns and wondered what it would be like to have a smartwatch inspired by the original Amiga Workbench. This is the result.
 
 If you'd like to know more about the why/wtf I wrote this up at [Tales From The Dork Web](https://thedorkweb.substack.com/).
+
+# Using the watch
+
+The menus are all walked through in the video above. Use the top right button on your TTGO watch to bring up the screen and tap the disk to open the menu. Slide up and down through options and tap to select. If you're in the slide menu, use the square in the top left to go back to the main screen.
+
+If to clear an alarm, go into timer and select cancel. If you play a song in the music section, it'll become your alarm song.
 
 # How to use this repo
 

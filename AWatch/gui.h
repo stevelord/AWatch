@@ -31,7 +31,11 @@ extern uint8_t mod_mode; // Modplayer mode: 0 = Stopped, 1 = Initialise, 2 = Pla
 extern uint32_t timer_left;
 extern bool timer_active;
 extern bool alarm_active;
+extern bool speech_active;
+extern bool anim_active;
+extern uint8_t anim_frame;
 extern unsigned char songs[3];
+extern char saytext[64];
 //extern const unsigned char *songs[3] = {ELYSIUM_MOD, Chaos_Engine_k8_mod, Project_X_RE_pxloader_mod};
 //extern bool timer_active = false;
 //extern uint8_t timer_left;

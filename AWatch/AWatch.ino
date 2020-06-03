@@ -37,12 +37,14 @@
 
 bool timer_active = false;
 bool alarm_active = false;
+bool speech_active = false;
 uint8_t song_index = 2;
 uint8_t mod_mode; // Modplayer mode: 0 = Stopped, 1 = Initialise, 2 = Playing
 uint32_t timer_left = 0; // Time left on timer
 uint8_t pwr_mode = 0; // Power mode: 0 = full power, 1 = low energy (no audio), 2 = medium energy (no lv_event processing, audio enabled)
 uint8_t last_sec = 0;
 unsigned char songs[3];
+char saytext[64];
 AudioGeneratorMOD *mod;
 //AudioFileSourceSPIFFS *file;
 AudioFileSourcePROGMEM *file;
@@ -408,6 +410,12 @@ void loop()
       sprintf(sbuf,"You have %u mihn its left.", timer_left/60, timer_left % 60);
       sam->Say(out, sbuf);
     }
+  }
+
+  if (speech_active){
+    sam->Say(out, saytext);
+    sam->Say(out, ".");
+    speech_active = false;
   }
 
   if (pwr_mode == 2 && timer_left == 0 && timer_active){
