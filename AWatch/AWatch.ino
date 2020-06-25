@@ -13,7 +13,7 @@
   git clone https://github.com/bblanchon/ArduinoJson.git
 */
 
-// #define LILYGO_TWATCH_2020_V1        // If you are using T-Watch-2020 version, please open this macro definition
+#define LILYGO_TWATCH_2020_V1        // If you are using T-Watch-2020 version, please open this macro definition
 
 #include <TTGO.h>
 #include "freertos/FreeRTOS.h"
@@ -161,9 +161,10 @@ void setup()
   //s0 = new AudioFileSourcePROGMEM( ELYSIUM_MOD, sizeof(ELYSIUM_MOD) );
   //s1 = new AudioFileSourcePROGMEM( Chaos_Engine_k8_mod, sizeof(Chaos_Engine_k8_mod) );
   //s2 = new AudioFileSourcePROGMEM( Project_X_RE_pxloader_mod, sizeof(Project_X_RE_pxloader_mod) );  
-
+  #ifndef LILYGO_TWATCH_2020_V1
   out = new AudioOutputI2S(0, 1);
   out->begin();
+  #endif
   
   //out->SetGain((70.0)/100.0);
   //out->SetGain(((float)40)/100.0);
@@ -256,6 +257,14 @@ void setup()
     }
   }, FALLING);
   //ttgo->power->setTimer(1); // Set AXP Timer
+  
+  #ifdef LILYGO_TWATCH_2020_V1
+  ttgo->eTFT->setRotation(2);
+  out = new AudioOutputI2S();
+  out->SetPinout(TWATCH_DAC_IIS_BCK, TWATCH_DAC_IIS_WS, TWATCH_DAC_IIS_DOUT);
+  out->begin();
+  #endif
+  
   //Check if the RTC clock matches, if not, use compile time
   ttgo->rtc->check();
 
