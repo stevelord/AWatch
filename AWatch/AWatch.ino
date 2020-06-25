@@ -14,7 +14,8 @@
 */
 
 #define LILYGO_TWATCH_2020_V1        // If you are using T-Watch-2020 version, please open this macro definition
-
+#include "SPIFFS.h"
+#include "AudioFileSourceSPIFFS.h"
 #include <TTGO.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -28,9 +29,9 @@
 //#include "elysium.h"
 //#include "chaos.h"
 //#include "pxloader.h"
-#include "SPIFFS.h"
+
 //#include "AudioFileSourcePROGMEM.h"
-#include "AudioFileSourceSPIFFS.h"
+
 #include "AudioGeneratorMOD.h"
 #include "AudioOutputI2S.h"
 #include <ESP8266SAM.h>
@@ -46,8 +47,8 @@ uint8_t last_sec = 0;
 unsigned char songs[3];
 char saytext[64];
 AudioGeneratorMOD *mod;
-//AudioFileSourceSPIFFS *file;
-AudioFileSourcePROGMEM *file;
+AudioFileSourceSPIFFS *file;
+//AudioFileSourcePROGMEM *file;
 //AudioFileSourcePROGMEM *s1;
 //AudioFileSourcePROGMEM *s2;
 AudioOutputI2S *out;
@@ -443,15 +444,18 @@ void loop()
          
     switch(song_index){
       case 0:
-        file = new AudioFileSourcePROGMEM(ELYSIUM_MOD, sizeof(ELYSIUM_MOD) );
+        //file = new AudioFileSourcePROGMEM(ELYSIUM_MOD, sizeof(ELYSIUM_MOD) );
+        file = new AudioFileSourceSPIFFS("/ELYSIUM.MOD");
         mod->begin(file, out);
         break;
       case 1:
-        file = new AudioFileSourcePROGMEM(Chaos_Engine_k8_mod, sizeof(Chaos_Engine_k8_mod) );
+        //file = new AudioFileSourcePROGMEM(Chaos_Engine_k8_mod, sizeof(Chaos_Engine_k8_mod) );
+        file = new AudioFileSourceSPIFFS("/enigma.mod");
         mod->begin(file, out);
         break;
       case 2: 
-        file = new AudioFileSourcePROGMEM(Project_X_RE_pxloader_mod, sizeof(Project_X_RE_pxloader_mod) );  
+        //file = new AudioFileSourcePROGMEM(Project_X_RE_pxloader_mod, sizeof(Project_X_RE_pxloader_mod) );  
+        file = new AudioFileSourceSPIFFS("/aurora.mod");
         mod->begin(file, out);
         break;
       default:
