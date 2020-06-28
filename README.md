@@ -29,6 +29,16 @@ Please note, none of this is production quality, beta quality, or even alpha qua
 
 That aside, it *mostly* works as a countdown timer with mod tunes, speech and a bunch of other nice things. It is buggy, expect edge cases. I use my own git repos for code normally so won't be updating this.
 
+# Contributing
+
+I would be delighted to receive pull requests, but am looking at writing something more like a proper watch OS from scratch and integrating features in for the long term. If you want to submit a pull request, please:
+
+1. Ensure that you have appropriate checks for different watch versions in your code (e.g. [Steveway's PR](https://github.com/stevelord/AWatch/commit/45ee5e0bb282a495e5f8cf9ee8ec1f2348fe680a))
+2. Test on a real watch to make sure that it works before issuing the pull request, and test any other functionality that may be impacted across different power modes (screen on and screen off for example)
+3. Include an overview of the changes, your hardware (particularly if you're using daughterboards on the 2019 version) and what you've tested as part of your PR.
+
+This makes testing and integrating your PR smoother for everyone. If you need a hand with the above, just ask for help.
+
 ## Thanks/Credits
 
-I'd like to thank [LewisXhe](https://github.com/lewisxhe) and [Moononournation](https://github.com/moononournation) for their examples and libraries that I so horrifically butchered, @Bodmer for his [TFT_eSPI](https://github.com/Bodmer/TFT_eSPI) library, @earlephilhower for his [ESP8266Audio](https://github.com/earlephilhower/ESP8266Audio) and [ESP8266SAM](https://github.com/earlephilhower/ESP8266SAM) libraries and the [LVGL](https://github.com/lvgl/lvgl) team for [LVGL](https://lvgl.io/). Also [Tobozo](https://github.com/tobozo/M5Stack-Raytracer/blob/master/M5Stack-Raytracer.ino) for his M5Stack Raytracer project.
+I'd like to thank [LewisXhe](https://github.com/lewisxhe) and [Moononournation](https://github.com/moononournation) for their examples and libraries that I so horrifically butchered, @Bodmer for his [TFT_eSPI](https://github.com/Bodmer/TFT_eSPI) library, @earlephilhower for his [ESP8266Audio](https://github.com/earlephilhower/ESP8266Audio) and [ESP8266SAM](https://github.com/earlephilhower/ESP8266SAM) libraries and the [LVGL](https://github.com/lvgl/lvgl) team for [LVGL](https://lvgl.io/). Also [Tobozo](https://github.com/tobozo/M5Stack-Raytracer/blob/master/M5Stack-Raytracer.ino) for his M5Stack Raytracer project. I'd also like to thank @steveway for his pull request. If I get more I'll make a dedicated thanks section for contributors.

@@ -13,9 +13,7 @@
   git clone https://github.com/bblanchon/ArduinoJson.git
 */
 
-#define LILYGO_TWATCH_2020_V1        // If you are using T-Watch-2020 version, please open this macro definition
-#include "SPIFFS.h"
-#include "AudioFileSourceSPIFFS.h"
+#define LILYGO_TWATCH_2020_V1        // Please comment out if using the 2019 model.
 #include <TTGO.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -25,16 +23,12 @@
 #include "esp_wifi.h"
 #include <WiFi.h>
 #include <time.h>
-#include "gui.h"
-//#include "elysium.h"
-//#include "chaos.h"
-//#include "pxloader.h"
-
-//#include "AudioFileSourcePROGMEM.h"
-
+#include "AudioFileSourcePROGMEM.h"
 #include "AudioGeneratorMOD.h"
 #include "AudioOutputI2S.h"
 #include <ESP8266SAM.h>
+
+#include "gui.h"
 
 bool timer_active = false;
 bool alarm_active = false;
@@ -47,10 +41,7 @@ uint8_t last_sec = 0;
 unsigned char songs[3];
 char saytext[64];
 AudioGeneratorMOD *mod;
-AudioFileSourceSPIFFS *file;
-//AudioFileSourcePROGMEM *file;
-//AudioFileSourcePROGMEM *s1;
-//AudioFileSourcePROGMEM *s2;
+AudioFileSourcePROGMEM *file;
 AudioOutputI2S *out;
 ESP8266SAM *sam = new ESP8266SAM;
 
@@ -159,16 +150,11 @@ void setup()
   //Initialize songs and audio
   mod_mode = 0; // Modplayer mode: 0 = Stopped, 1 = Initialise, 2 = Playing
   mod = new AudioGeneratorMOD();
-  //s0 = new AudioFileSourcePROGMEM( ELYSIUM_MOD, sizeof(ELYSIUM_MOD) );
-  //s1 = new AudioFileSourcePROGMEM( Chaos_Engine_k8_mod, sizeof(Chaos_Engine_k8_mod) );
-  //s2 = new AudioFileSourcePROGMEM( Project_X_RE_pxloader_mod, sizeof(Project_X_RE_pxloader_mod) );  
+  
   #ifndef LILYGO_TWATCH_2020_V1
   out = new AudioOutputI2S(0, 1);
   out->begin();
   #endif
-  
-  //out->SetGain((70.0)/100.0);
-  //out->SetGain(((float)40)/100.0);
 
   //Create a program that allows the required message objects and group flags
   g_event_queue_handle = xQueueCreate(20, sizeof(uint8_t));
@@ -436,26 +422,18 @@ void loop()
   if (mod_mode == 1) {
     Serial.println("Playing mod");
     ttgo->enableLDO3();
-
-  //s0 = new AudioFileSourcePROGMEM( ELYSIUM_MOD, sizeof(ELYSIUM_MOD) );
-  //s1 = new AudioFileSourcePROGMEM( Chaos_Engine_k8_mod, sizeof(Chaos_Engine_k8_mod) );
-  //s2 = new AudioFileSourcePROGMEM( Project_X_RE_pxloader_mod, sizeof(Project_X_RE_pxloader_mod) );  
-
-         
+        
     switch(song_index){
       case 0:
-        //file = new AudioFileSourcePROGMEM(ELYSIUM_MOD, sizeof(ELYSIUM_MOD) );
-        file = new AudioFileSourceSPIFFS("/ELYSIUM.MOD");
+        file = new AudioFileSourcePROGMEM(ELYSIUM_MOD, sizeof(ELYSIUM_MOD) );
         mod->begin(file, out);
         break;
       case 1:
-        //file = new AudioFileSourcePROGMEM(Chaos_Engine_k8_mod, sizeof(Chaos_Engine_k8_mod) );
-        file = new AudioFileSourceSPIFFS("/enigma.mod");
+        file = new AudioFileSourcePROGMEM(Chaos_Engine_k8_mod, sizeof(Chaos_Engine_k8_mod) );
         mod->begin(file, out);
         break;
       case 2: 
-        //file = new AudioFileSourcePROGMEM(Project_X_RE_pxloader_mod, sizeof(Project_X_RE_pxloader_mod) );  
-        file = new AudioFileSourceSPIFFS("/aurora.mod");
+        file = new AudioFileSourcePROGMEM(Project_X_RE_pxloader_mod, sizeof(Project_X_RE_pxloader_mod) );  
         mod->begin(file, out);
         break;
       default:
