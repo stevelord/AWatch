@@ -1,11 +1,11 @@
 # AWatch
-An ESP32 TTGO T-Watch (2019 edition) Amiga-inspired Countdown Timer Watch
+An ESP32 TTGO T-Watch (2019 edition) Workbench 1.x-inspired Countdown Timer Watch
 
 ![2020 T-Watch model](images/2020-model.jpg)
 
 [![Watch the video](https://www.youtube.com/watch?v=5ogbpPmmSac/maxresdefault.jpg)](https://www.youtube.com/watch?v=5ogbpPmmSac)
 
-2020 Model available for around £25/$25 from [Banggood](https://www.banggood.com/custlink/KGvvuczLO7).
+2020 Model available for around £25/$30 from [Banggood](https://www.banggood.com/custlink/KGvvuczLO7).
 
 **Now works with 2020 model (shown above). Check the defines in AWatch.ino.**
 
