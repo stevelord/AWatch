@@ -1,7 +1,13 @@
 # AWatch
 An ESP32 TTGO T-Watch (2019 edition) Amiga-inspired Countdown Timer Watch
 
+![2020 T-Watch model](images/2020-model.jpg)
+
 [![Watch the video](https://www.youtube.com/watch?v=5ogbpPmmSac/maxresdefault.jpg)](https://www.youtube.com/watch?v=5ogbpPmmSac)
+
+2020 Model available for around £25/$25 from [Banggood](https://www.banggood.com/custlink/KGvvuczLO7).
+
+**Now works with 2020 model (shown above). Check the defines in AWatch.ino.**
 
 # Background
 My partner asked if I could build her a timer countdown watch for measuring time outside during COVID lockdown. I had TTGO T-Watches knocking around and decided to give it a go. I'm a big fan of Amiga design patterns and wondered what it would be like to have a smartwatch inspired by the original Amiga Workbench. This is the result.
